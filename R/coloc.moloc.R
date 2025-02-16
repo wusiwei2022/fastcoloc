@@ -1,5 +1,5 @@
+#' To run a conventional colocalization
 #' @export
-# Run conventional colocalization
 fast.coloc = function(coloc.data, type.a = c("quant", "cc"), type.b = c("quant", "cc")){
   type.a = match.arg(type.a)
   type.b = match.arg(type.b)
@@ -18,7 +18,8 @@ fast.coloc = function(coloc.data, type.a = c("quant", "cc"), type.b = c("quant",
   return(coloc.result)
 }
 
-# Run multi-trait colocalization
+#' To run multi-trait colocalization
+#' @export
 fast.moloc = function(moloc.data, type.a = c("quant", "cc"), type.b = c("quant", "cc"), type.c = c("quant", "cc")){
   type.a = match.arg(type.a)
   type.b = match.arg(type.b)

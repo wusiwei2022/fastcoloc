@@ -1,6 +1,5 @@
+#' Format GWAS Summary data into
 #' @export
-
-# Format GWAS Summary data into 
 format.data = function(data = NULL, data.path = NULL, TRAIT, RSID = "RSID", EA = "EA", NEA = "NEA", EAF = NULL, MAF = NULL, BETA = "BETA", SE = "SE", N = "N"){
   if(is.null(data) & is.null(data.path)){stop("please provide gwas summary data or path to gwas summary data")}
   if(is.null(data) & !is.null(data.path)){data = data.table::fread(data.path)}
@@ -19,7 +18,8 @@ format.data = function(data = NULL, data.path = NULL, TRAIT, RSID = "RSID", EA =
   return(std.data)
 }
 
-# Quality Control the post-format standardized data
+#' Quality Control the post-format standardized data
+#' @export
 qc.data = function(data, option = "biallelic.snp", id = "rsid"){
   if(option == "biallelic.variant"){
     data = data[!{duplicated(data$rsid, fromLast = TRUE) | duplicated(data$rsid, fromLast = FALSE)},]}

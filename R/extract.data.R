@@ -1,6 +1,6 @@
+#' Fast extract a subset of the data set in reference to the ID provided.
+#' The data set where the data will be extracted should be a .txt file separated by tab
 #' @export
-# fast extract a subset of the dataset in reference to the ID provided
-# the dataset to be extracted need to be a .txt file seperated by tab
 extract.data = function(ref.id, data.path, data.id.index = 1){
   ### Check if all the IDs are RSIDs
   if(all(startsWith(ref.id, "rs"))){message("all the IDs are rsid")}else{warning("Not all the IDs are rsid")}
