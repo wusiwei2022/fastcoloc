@@ -1,5 +1,5 @@
-#' Format GWAS Summary data into
-#' @export
+#' Convert a GWAS Summary data into a standard format for downstream colocalization analysis 
+#' @export format.data
 format.data = function(data = NULL, data.path = NULL, TRAIT, RSID = "RSID", EA = "EA", NEA = "NEA", EAF = NULL, MAF = NULL, BETA = "BETA", SE = "SE", N = "N"){
   if(is.null(data) & is.null(data.path)){stop("please provide gwas summary data or path to gwas summary data")}
   if(is.null(data) & !is.null(data.path)){data = data.table::fread(data.path)}

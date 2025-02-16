@@ -2,12 +2,21 @@
 % Please edit documentation in R/extract.data.R
 \name{extract.data}
 \alias{extract.data}
-\title{Fast extract a subset of the data set in reference to the ID provided.
-The data set where the data will be extracted should be a .txt file separated by tab}
+\title{Fast extract a subset of GWAS data}
 \usage{
 \method{extract}{data}(ref.id, data.path, data.id.index = 1)
 }
+\arguments{
+\item{ref.id}{A vector of RSID to match in the GWAS summary data}
+
+\item{data.id.index}{Column number of RSID in the GWAS summary data}
+
+\item{name}{Path to the GWAS summary to extract}
+}
+\value{
+A data frame that contains a subset of GWAS summary data
+}
 \description{
-Fast extract a subset of the data set in reference to the ID provided.
-The data set where the data will be extracted should be a .txt file separated by tab
+Fast extract a subset of the GWAS summary data set in reference to the ID provided.
+The data set should be a .txt file separated by tab
 }

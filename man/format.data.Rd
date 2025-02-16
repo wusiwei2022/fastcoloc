@@ -2,7 +2,7 @@
 % Please edit documentation in R/format.qc.data.R
 \name{format.data}
 \alias{format.data}
-\title{Format GWAS Summary data into}
+\title{Convert a GWAS Summary data into a standard format for downstream colocalization analysis}
 \usage{
 \method{format}{data}(
   data = NULL,
@@ -19,5 +19,5 @@
 )
 }
 \description{
-Format GWAS Summary data into
+Convert a GWAS Summary data into a standard format for downstream colocalization analysis
 }

@@ -1,6 +1,13 @@
-#' Fast extract a subset of the data set in reference to the ID provided.
-#' The data set where the data will be extracted should be a .txt file separated by tab
-#' @export
+#' Fast extract a subset of GWAS data
+#' 
+#' Fast extract a subset of the GWAS summary data set in reference to the ID provided.
+#' The data set should be a .txt file separated by tab
+#' 
+#' @param ref.id A vector of RSID to match in the GWAS summary data
+#' @param name Path to the GWAS summary to extract
+#' @param data.id.index Column number of RSID in the GWAS summary data  
+#' @returns A data frame that contains a subset of GWAS summary data
+#' @export extract.data
 extract.data = function(ref.id, data.path, data.id.index = 1){
   ### Check if all the IDs are RSIDs
   if(all(startsWith(ref.id, "rs"))){message("all the IDs are rsid")}else{warning("Not all the IDs are rsid")}
