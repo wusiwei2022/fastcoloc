@@ -45,9 +45,9 @@ harmonise.moloc.data = function(data.a, data.b, data.c){
   trait.c = unique(data.c$trait)
   message(paste0("harmonise ", trait.a, " ", trait.b, ", and ", trait.c))
   ## harmonise trait.a and trait.b
-  coloc.data.ab = harmonise.coloc.data(data.a, data.b, type.a, type.b)
+  coloc.data.ab = harmonise.coloc.data(data.a, data.b)
   ## harmonise trait.a and trait.c
-  coloc.data.ac = harmonise.coloc.data(data.a, data.c, type.a, type.c)
+  coloc.data.ac = harmonise.coloc.data(data.a, data.c)
   colnames(coloc.data.ac) = gsub(".b", ".c", colnames(coloc.data.ac))
   ## merge data.ab with data.ac
   coloc.data.abc = inner_join(coloc.data.ab, coloc.data.ac)
