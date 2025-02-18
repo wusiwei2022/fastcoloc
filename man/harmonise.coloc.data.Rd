@@ -2,12 +2,11 @@
 % Please edit documentation in R/harmonise.data.R
 \name{harmonise.coloc.data}
 \alias{harmonise.coloc.data}
-\title{To harmonise 2 GWAS summary data, primarily for conventional coloc analysis.
-By default, the RSID, EA, and NEA will be referred to the first data set.}
+\title{To harmonise 2 GWAS summary data}
 \usage{
 harmonise.coloc.data(data.a, data.b)
 }
 \description{
-To harmonise 2 GWAS summary data, primarily for conventional coloc analysis.
+Harmonise 2 GWAS summary data primarily for conventional coloc analysis.
 By default, the RSID, EA, and NEA will be referred to the first data set.
 }

@@ -1,5 +1,8 @@
-#' To harmonise 2 GWAS summary data, primarily for conventional coloc analysis.
-#' By default, the RSID, EA, and NEA will be referred to the first data set. 
+#' To harmonise 2 GWAS summary data
+#' 
+#' Harmonise 2 GWAS summary data primarily for conventional coloc analysis.
+#' By default, the RSID, EA, and NEA will be referred to the first data set.
+#' 
 #' @export
 harmonise.coloc.data = function(data.a, data.b){
   trait.a = unique(data.a$trait)
@@ -30,7 +33,11 @@ harmonise.coloc.data = function(data.a, data.b){
   return(coloc.data.12)
 }
 
-#' To harmonise across 3 GWAS summary data, primarily for multi-trait colocalization analysis.
+#' To harmonise across 3 GWAS summary data
+#' 
+#' Harmonise across 3 GWAS summary data primarily for multi-trait colocalization analysis.
+#' By default, the RSID, EA, and NEA will be referred to the first data set.
+#' 
 #' @export
 harmonise.moloc.data = function(data.a, data.b, data.c){
   trait.a = unique(data.a$trait)

@@ -2,10 +2,11 @@
 % Please edit documentation in R/harmonise.data.R
 \name{harmonise.moloc.data}
 \alias{harmonise.moloc.data}
-\title{To harmonise across 3 GWAS summary data, primarily for multi-trait colocalization analysis.}
+\title{To harmonise across 3 GWAS summary data}
 \usage{
 harmonise.moloc.data(data.a, data.b, data.c)
 }
 \description{
-To harmonise across 3 GWAS summary data, primarily for multi-trait colocalization analysis.
+Harmonise across 3 GWAS summary data primarily for multi-trait colocalization analysis.
+By default, the RSID, EA, and NEA will be referred to the first data set.
 }
