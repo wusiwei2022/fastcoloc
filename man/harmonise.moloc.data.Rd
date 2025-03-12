@@ -6,6 +6,16 @@
 \usage{
 harmonise.moloc.data(data.a, data.b, data.c)
 }
+\arguments{
+\item{data.a}{The first gwas summary data set you want to harmonise. Trait, rsid, ea, and nea must be available in the gwas summary while eaf is optional.}
+
+\item{data.b}{The second gwas summary data set you want to harmonise. Trait, rsid, ea, and nea must be available in the gwas summary while eaf is optional.}
+
+\item{data.c}{The second gwas summary data set you want to harmonise. Trait, rsid, ea, and nea must be available in the gwas summary while eaf is optional.}
+}
+\value{
+A harmonised data with 3 gwas summary data.
+}
 \description{
 Harmonise across 3 GWAS summary data primarily for multi-trait colocalization analysis.
 By default, the RSID, EA, and NEA will be referred to the first data set.
