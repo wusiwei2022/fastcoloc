@@ -1,24 +1,5 @@
-#' To run a conventional colocalization
-#' @export
-fast.coloc = function(coloc.data, type.a = c("quant", "cc"), type.b = c("quant", "cc")){
-  type.a = match.arg(type.a)
-  type.b = match.arg(type.b)
-  coloc.result = coloc::coloc.abf(list(snp = coloc.data$rsid, 
-                                       beta = coloc.data$beta.a, 
-                                       varbeta = (coloc.data$se.a)^2, 
-                                       MAF = coloc.data$maf.a, 
-                                       N = coloc.data$n.a, 
-                                       type = type.a),
-                                  list(snp = coloc.data$rsid, 
-                                       beta = coloc.data$beta.b, 
-                                       varbeta = (coloc.data$se.b)^2, 
-                                       MAF = coloc.data$maf.b, 
-                                       N = coloc.data$n.b, 
-                                       type = type.b))
-  return(coloc.result)
-}
-
 #' To run multi-trait colocalization
+#' 
 #' @export
 fast.moloc = function(moloc.data, type.a = c("quant", "cc"), type.b = c("quant", "cc"), type.c = c("quant", "cc")){
   type.a = match.arg(type.a)

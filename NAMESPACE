@@ -2,5 +2,4 @@
 
 export(fast.coloc)
 export(fast.moloc)
-export(harmonise.coloc.data)
-export(harmonise.moloc.data)
+export(moloc.abf)
