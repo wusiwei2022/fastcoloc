@@ -136,7 +136,7 @@ process.dataset <- function(d, suffix=NULL, type=NULL, prior_var) { # if have an
   if ("BETA" %in% nd && "SE" %in% nd && !("MAF" %in% nd & "N" %in% nd || "sdY" %in% nd)) stop('Must give either MAF and N, or sdY')
   if ("BETA" %in% nd && "SE" %in% nd && ("MAF" %in% nd || "sdY" %in% nd)) {
     bf <- approx.bf.estimates(z=d$BETA/sqrt(d$varbeta), V=d$varbeta, type=type, suffix=NULL, sdY=d$sdY, prior_var)
-    return(df)
+    return(bf)
   }
   
   if (type=="cc" & !("s" %in% nd)) stop("Must specify s if type=='cc' and you want to use approximate Bayes Factors")
@@ -148,8 +148,8 @@ process.dataset <- function(d, suffix=NULL, type=NULL, prior_var) { # if have an
   }
   ## Compute ABF with P value
   if ("PVAL" %in% nd) {
-    if (any(df$PVAL==0)) stop("There are some p-value equal to zero, remove these!")
-    abf <- approx.bf.p(p=df$PVAL, f=df$MAF, type=type, N=d$N, s=d$s, suffix=NULL, prior_var)
+    if (any(d$PVAL==0)) stop("There are some p-value equal to zero, remove these!")
+    abf <- approx.bf.p(p=d$PVAL, f=d$MAF, type=type, N=d$N, s=d$s, suffix=NULL, prior_var)
     return(bf)
   }
   stop("Must give, as a minimum, either (beta, varbeta, type), (z score, MAF, N, type), or (pvalues, MAF, N, type)")
