@@ -149,7 +149,7 @@ process.dataset <- function(d, suffix=NULL, type=NULL, prior_var) { # if have an
   ## Compute ABF with P value
   if ("PVAL" %in% nd) {
     if (any(d$PVAL==0)) stop("There are some p-value equal to zero, remove these!")
-    abf <- approx.bf.p(p=d$PVAL, f=d$MAF, type=type, N=d$N, s=d$s, suffix=NULL, prior_var)
+    bf <- approx.bf.p(p=d$PVAL, f=d$MAF, type=type, N=d$N, s=d$s, suffix=NULL, prior_var)
     return(bf)
   }
   stop("Must give, as a minimum, either (beta, varbeta, type), (z score, MAF, N, type), or (pvalues, MAF, N, type)")
