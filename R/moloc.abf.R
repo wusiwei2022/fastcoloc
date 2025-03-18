@@ -474,21 +474,25 @@ moloc.abf <- function(listData, prior_var=c(0.01, 0.1, 0.5), priors=c(1e-04, 1e-
   for (i in 1:length(listData)) {
     nd <- colnames(listData[[i]])
     # Add type
-    listData[[i]]$type <- ifelse("Ncases" %in% names(listData[[i]]), "cc", "quant")
+    # listData[[i]]$type <- ifelse("Ncases" %in% names(listData[[i]]), "cc", "quant")
     # Add s
     # listData[[i]]$s = ifelse("Ncases" %in% names(listData[[i]]), as.numeric(listData[[i]]$Ncases/listData[[i]]$N), 0.5)
-    listData[[i]]$s = 0
-    if ("Ncases" %in% names(listData[[i]])) s=as.numeric(listData[[i]]$Ncases/listData[[i]]$N)
-    if (!("Ncases" %in% names(listData[[i]]))) s=0.5
-    listData[[i]]$s = s
-    if ("BETA" %in% nd && "SE" %in% nd && !("MAF" %in% nd & "N" %in% nd || "sdY" %in% nd)) stop('Must give either MAF and N, or sdY')
-    if ("BETA" %in% nd && "SE" %in% nd && ("MAF" %in% nd || "sdY" %in% nd)) {
-      listData[[i]]$varbeta <- listData[[i]]$SE^2
-      if (unique(listData[[i]]$type)=="quant" & !("sdY" %in% nd)) {
-        listData[[i]]$sdY <- sdY.est(listData[[i]]$varbeta, listData[[i]]$MAF, listData[[i]]$N)
-        message("Mean estimated sdY from data", i, ": ", mean(listData[[i]]$sdY))
+    # listData[[i]]$s = 0
+    # if ("Ncases" %in% names(listData[[i]])) s=as.numeric(listData[[i]]$Ncases/listData[[i]]$N)
+    # if (!("Ncases" %in% names(listData[[i]]))) s=0.5
+    # listData[[i]]$s = s
+    # if ("BETA" %in% nd && "SE" %in% nd && !("MAF" %in% nd & "N" %in% nd || "sdY" %in% nd)) stop('Must give either MAF and N, or sdY')
+    #if ("BETA" %in% nd && "SE" %in% nd && ("MAF" %in% nd || "sdY" %in% nd)) {
+      # listData[[i]]$varbeta <- listData[[i]]$SE^2
+      if(unique(listData[[i]]$type)=="quant" & !("sdY" %in% nd)){
+        if("MAF" %in% nd & "N" %in% nd){
+          listData[[i]]$sdY = sdY.est(listData[[i]]$varbeta, listData[[i]]$MAF, listData[[i]]$N)
+          message("Mean estimated sdY from data", i, ": ", mean(listData[[i]]$sdY))
+        }else{
+          listData[[i]]$sdY = 1 
+        }
       }
-    }
+    #}
   }
   
   # Add MAF if missing from the first available matching data with maf
