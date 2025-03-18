@@ -88,7 +88,7 @@ approx.bf.p <- function(p,f,type, N, s, suffix=NULL, prior_var) {
 #' @return data.frame containing lABF and intermediate calculations
 #' @author Claudia Giambartolomei
 #' @keywords internal
-approx.bf.p <- function(z,f,type, N, s, suffix=NULL, prior_var) {
+approx.bf.z <- function(z,f,type, N, s, suffix=NULL, prior_var) {
   if(type=="quant") {
     V <- Var.data(f, N)
   } else {
