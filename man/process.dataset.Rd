@@ -9,7 +9,7 @@ process.dataset(d, suffix = NULL, type = NULL, prior_var)
 \arguments{
 \item{d}{list}
 
-\item{suffix}{"df1" or "df2"}
+\item{suffix}{"df1", "df2", "df3", ...}
 }
 \value{
 data.frame with log(abf) or log(bf)
