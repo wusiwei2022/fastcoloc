@@ -1,5 +1,3 @@
-#library(mvtnorm)
-
 ##' Estimate trait standard deviation given vectors of variance of coefficients,  MAF and sample size
 ##'
 ##' Estimate is based on var(beta-hat) = var(Y) / (n * var(X))
@@ -75,10 +73,10 @@ approx.bf.p <- function(p,f,type, N, s, suffix=NULL, prior_var) {
   return(ret)  
 }
 
-#' Internal function, approx.bf.p
+#' Internal function, approx.bf.z
 #'
 #' Calculate approximate Bayes Factors
-#' @title Internal function, approx.bf.p
+#' @title Internal function, approx.bf.z
 #' @param z z statistics
 #' @param f MAF
 #' @param type "quant" or "cc"
@@ -148,8 +146,8 @@ process.dataset <- function(d, suffix=NULL, type=NULL, prior_var) { # if have an
   }
   ## Compute ABF with P value
   if ("PVAL" %in% nd) {
-    if (any(d$PVAL==0)) stop("There are some p-value equal to zero, remove these!")
-    bf <- approx.bf.p(p=d$PVAL, f=d$MAF, type=type, N=d$N, s=d$s, suffix=NULL, prior_var)
+    if (any(d$PVAL==0)) stop("There are some p-value equal to zero, please try to use BETA and SE or Z statistics to calculate ABF!")
+    bf = approx.bf.p(p=d$PVAL, f=d$MAF, type=type, N=d$N, s=d$s, suffix=NULL, prior_var)
     return(bf)
   }
   stop("Must give, as a minimum, either (beta, varbeta, type), (z score, MAF, N, type), or (pvalues, MAF, N, type)")
@@ -265,7 +263,6 @@ adjust_bfs <- function(listData, prior_var="default"){
   })
   names(ABF_single) <- d
   
-  
   for (i in 1:length(d)) {
     config <- d[i]
     ABF[,1,config] <- apply(ABF_single[[config]], 1, function(x) logsum(x) -log(length(prior_var)))
@@ -276,7 +273,6 @@ adjust_bfs <- function(listData, prior_var="default"){
     # ABF[,1,config] <- apply(ABF[,,unlist(strsplit(config, split=""))], 1, FUN=sum)
     internal_sum = Reduce('+', ABF_single[unlist(strsplit(config, split=""))])
     ABF[,1,config] <- apply(internal_sum, 1, function(x) logsum(x) -log(length(prior_var)))
-    
   }
   
   return(ABF)
@@ -442,10 +438,11 @@ snp_ppa <- function(ABF, n_files, config_ppas, save.SNP.info){
 #'     must contain columns named SNP (the SNP name consistent across all the data frames), 
 #'     BETA, 
 #'     SE
-#' @param prior_var One or more numbers for the prior variance of the ABF.
-#' @param priors are numbers, the prior for one variant to be associated with 1 trait and with each additional trait
-#' @param compute_sdY Estimate standard deviation of Y. If false assume sdY is 1
-#' 
+#' @param prior_var Can either be "default" or a numeric vector with one or more numbers for the prior variance of the ABF.
+#'                  If use "default", 0.2^2 will be used for case-controls study while 0.15^2 will be used for quantitative traits.
+#'                  If use a numeric vector, Approximate Bayes Factors will be computed with each prior and averaged.
+#'                  By default, prior_var = c(0.01, 0.1, 0.5) where ABF will be calculated and averaged at prior_var = 0.01, 0.1, and 0.5.
+#' @param priors Can either be "default" or a numeric vector, the prior for one variant to be associated with 1 trait and with each additional trait
 #' @param ... parameters passed to \code{\link{adjust_bfs}}, \code{\link{config_coloc}}, \code{\link{snp_ppa}}
 #' @return A list of three elements: 
 #'         First is a data frame with 4 variables: priors ('prior'), likelihoods ('sumbf') and 
@@ -459,59 +456,41 @@ snp_ppa <- function(ABF, n_files, config_ppas, save.SNP.info){
 #' @examples
 #' moloc <- moloc.abf(listData) # uses default priors
 #' 
-#' @author Claudia Giambartolomei
-moloc.abf <- function(listData, prior_var=c(0.01, 0.1, 0.5), priors=c(1e-04, 1e-06, 1e-07), save.SNP.info = FALSE) {
-  n_files <- length(listData)
-  if(missing(priors)) {
-    priors <- 10^-(seq(from=4, to=4+n_files-1, by=1))
+#' @author Siwei Wu
+moloc.abf <- function(listData, prior_var=c(0.01, 0.1, 0.5), priors="default", save.SNP.info = FALSE) {
+  
+  # Set up prior probabilities
+  n_files = length(listData)
+  if(priors == "default"){
+    priors = ifelse(n_files = 3, c(1e-04, 1e-06, 1e-07), 10^-(seq(from=4, to=4+n_files-1, by=1)))
     message("Use default priors: ", paste(priors, collapse=","))
-  } else {
-    if (length(priors)!=n_files) stop("Priors need to be the same length as the number of traits")
-    priors <- as.numeric(priors)
+  }else{
+    if(length(priors)!=n_files) stop("Priors need to be the same length as the number of traits")
+    if(!all(is.numeric(priors))) stop("Priors need to be numeric values < 1")
   }
   
+  # Check the existence of outcome type
+  for(i in 1:length(listData)){
+    nd = names(listData[[i]])
+    if (!"type" %in% nd) stop("dataset ", i, ": ",'The variable type must be set, otherwise the Bayes Factors cannot be computed')
+    if (! (unique(listData[[i]]$type) %in% c("quant", "cc"))) stop("dataset ", i, ": ","type must be quant or cc")
+  }
   
-  for (i in 1:length(listData)) {
-    nd <- colnames(listData[[i]])
-    # Add type
-    # listData[[i]]$type <- ifelse("Ncases" %in% names(listData[[i]]), "cc", "quant")
-    # Add s
-    # listData[[i]]$s = ifelse("Ncases" %in% names(listData[[i]]), as.numeric(listData[[i]]$Ncases/listData[[i]]$N), 0.5)
-    # listData[[i]]$s = 0
-    # if ("Ncases" %in% names(listData[[i]])) s=as.numeric(listData[[i]]$Ncases/listData[[i]]$N)
-    # if (!("Ncases" %in% names(listData[[i]]))) s=0.5
-    # listData[[i]]$s = s
-    # if ("BETA" %in% nd && "SE" %in% nd && !("MAF" %in% nd & "N" %in% nd || "sdY" %in% nd)) stop('Must give either MAF and N, or sdY')
-    #if ("BETA" %in% nd && "SE" %in% nd && ("MAF" %in% nd || "sdY" %in% nd)) {
-      # listData[[i]]$varbeta <- listData[[i]]$SE^2
-      if(unique(listData[[i]]$type)=="quant" & !("sdY" %in% nd)){
-        if("MAF" %in% nd & "N" %in% nd){
-          listData[[i]]$sdY = sdY.est(listData[[i]]$varbeta, listData[[i]]$MAF, listData[[i]]$N)
-          message("Mean estimated sdY from data", i, ": ", mean(listData[[i]]$sdY))
+  # Estimate sdY for quantitative traits
+  for(i in 1:length(listData)){
+    nd = colnames(listData[[i]])
+    if(unique(listData[[i]]$type)=="quant" & !("sdY" %in% nd)){
+      if("MAF" %in% nd & "N" %in% nd & "varbeta" %in% nd){
+        listData[[i]]$sdY = sdY.est(listData[[i]]$varbeta, listData[[i]]$MAF, listData[[i]]$N)
+        message("Mean estimated sdY from data", i, ": ", mean(listData[[i]]$sdY))
         }else{
           listData[[i]]$sdY = 1 
         }
       }
-    #}
   }
   
-  # Add MAF if missing from the first available matching data with maf
-  # for (i in 1:length(listData)) {
-  #   if (length(grep("MAF", names(listData[[i]])))>0) 
-  #   MAF <- listData[[i]]$MAF
-  #   names(MAF) <- listData[[i]]$SNP
-  #   print(i)
-  #   break
-  #}
-  
-  for (i in 1:length(listData)) {
-    if (length(grep("MAF", names(listData[[i]])))==0) {
-      stop("Dataset ", i, " does not contain MAF; use matching MAF from other datasets.") 
-      #   id <- match(names(MAF), listData[[i]]$SNP)
-      #   listData[[i]]$MAF = MAF[id]
-    }
-  }
-  ABF <- adjust_bfs(listData=listData, prior_var=prior_var)
+  # Calculate Approximate Bayes Factors
+  ABF = adjust_bfs(listData=listData, prior_var=prior_var)
   lkl <- config_coloc(ABF, n_files, priors)
   snp <- snp_ppa(ABF, n_files=n_files, config_ppas=lkl[[1]], save.SNP.info)
   nsnps <- lkl[[2]]
@@ -532,86 +511,4 @@ moloc.abf <- function(listData, prior_var=c(0.01, 0.1, 0.5), priors=c(1e-04, 1e-
   }
   names(res) <- c("priors_lkl_ppa", "nsnps", "best_snp")
   return(res)
-}
-
-
-######
-# These functions align alleles and betas
-
-#' Find complement SNP
-#'
-#' @title complement_snp
-#' @param x character
-#' @return character, complement
-#' @family align functions
-#' @examples
-#' complement_snp("A")
-#' 
-#' @author James Boocock
-#' @keywords internal
-complement_snp <- function(x){
-  as = x =="A"
-  ts = x == "T"
-  gs = x == "G"
-  cs = x == "C"
-  ins = x == "I"
-  dels = x == "D"
-  x[as] = "T"
-  x[ts] = "A"
-  x[gs] = "C"
-  x[cs] = "G"
-  x[ins] = "NA"
-  x[dels] = "NA"
-  return(x)
-}
-
-#' Change indel format to I/D
-#'
-#' @title change_indels
-#' @param data, a data frame with columns A1 and A2
-#' @return data frame
-#' @family align functions
-#' 
-#' @author Claudia Giambartolomei
-#' @keywords internal
-change_indels <- function(data) {
-  data$A2[nchar(data$A1)>1] = "D"
-  data$A1[nchar(data$A1)>1] = "I"
-  data$A1[nchar(data$A2)>1] = "D"
-  data$A2[nchar(data$A2)>1] = "I"
-  return(data)
-}
-
-#' Match alleles to a reference and flip betas
-#'
-#' @title match_alleles
-#' @param data, is a data.frame with columns A1 and A2, and reference alleles 
-#' that need to match
-#' @param A1.ref column names of ref alleles for A1 in the same data frame
-#' @param A2.ref column names of ref alleles for A2 in the same data frame
-#' @param flip logical, whether to flip the betas if the alleles are flipped
-#' @return data frame
-#' @family align functions
-#' 
-#' 
-#' 
-#' @author Claudia Giambartolomei, James Boocock
-#' @keywords internal
-match_alleles <- function(data, A1.ref="A1.ref", A2.ref="A2.ref",  A1.data = "A1", A2.data = "A2", BETA.data="BETA", flip = TRUE) {
-  match_correct = data[,A1.ref] == data[,A1.data] & data[,A2.ref]== data[,A2.data]
-  match_flip = data[,A1.ref] == data[,A2.data] & data[,A2.ref] == data[,A1.data]
-  match_comp_one = data[,A1.ref] == complement_snp(data[,A1.data]) & data[,A2.ref]== complement_snp(data[,A2.data])
-  match_comp_two = data[,A1.ref] == complement_snp(data[,A2.data]) & data[,A2.ref] == complement_snp(data[,A2.data])
-  snp_allele_match = match_flip | match_correct | match_comp_one | match_comp_two
-  message(sum(snp_allele_match), " SNPs out of ", length(snp_allele_match), " had the correct alleles, discarding SNPs without the correct alleles")
-  if (flip) {
-    if (any(which(match_flip)>0)) {
-      data[match_flip, A1.data]=data[match_flip, A1.ref]
-      data[match_flip, A2.data]=data[match_flip, A2.ref]
-      data[match_flip, BETA.data]=-data[match_flip, BETA.data]
-    }
-  }
-  removed = data[!snp_allele_match,]
-  data = data[snp_allele_match,]
-  return(list(data, removed))
 }

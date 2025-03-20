@@ -7,7 +7,7 @@
 moloc.abf(
   listData,
   prior_var = c(0.01, 0.1, 0.5),
-  priors = c(1e-04, 1e-06, 1e-07),
+  priors = "default",
   save.SNP.info = FALSE
 )
 }
@@ -17,11 +17,12 @@ must contain columns named SNP (the SNP name consistent across all the data fram
 BETA,
 SE}
 
-\item{prior_var}{One or more numbers for the prior variance of the ABF.}
+\item{prior_var}{Can either be "default" or a numeric vector with one or more numbers for the prior variance of the ABF.
+If use "default", 0.2^2 will be used for case-controls study while 0.15^2 will be used for quantitative traits.
+If use a numeric vector, Approximate Bayes Factors will be computed with each prior and averaged.
+By default, prior_var = c(0.01, 0.1, 0.5) where ABF will be calculated and averaged at prior_var = 0.01, 0.1, and 0.5.}
 
-\item{priors}{are numbers, the prior for one variant to be associated with 1 trait and with each additional trait}
-
-\item{compute_sdY}{Estimate standard deviation of Y. If false assume sdY is 1}
+\item{priors}{Can either be "default" or a numeric vector, the prior for one variant to be associated with 1 trait and with each additional trait}
 
 \item{...}{parameters passed to \code{\link{adjust_bfs}}, \code{\link{config_coloc}}, \code{\link{snp_ppa}}}
 }
@@ -46,4 +47,6 @@ moloc <- moloc.abf(listData) # uses default priors
 }
 \author{
 Claudia Giambartolomei
+
+Siwei Wu
 }

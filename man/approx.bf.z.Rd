@@ -2,7 +2,7 @@
 % Please edit documentation in R/moloc.abf.R
 \name{approx.bf.z}
 \alias{approx.bf.z}
-\title{Internal function, approx.bf.p}
+\title{Internal function, approx.bf.z}
 \usage{
 approx.bf.z(z, f, type, N, s, suffix = NULL, prior_var)
 }
@@ -23,7 +23,7 @@ approx.bf.z(z, f, type, N, s, suffix = NULL, prior_var)
 data.frame containing lABF and intermediate calculations
 }
 \description{
-Internal function, approx.bf.p
+Internal function, approx.bf.z
 }
 \details{
 Calculate approximate Bayes Factors
