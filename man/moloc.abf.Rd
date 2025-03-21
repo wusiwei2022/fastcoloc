@@ -42,11 +42,8 @@ Bayesian multiple trait colocalization analysis using list of data.frames
 Runs \code{\link{adjust_bfs}}, \code{\link{config_coloc}}, \code{\link{snp_ppa}}
 }
 \examples{
-moloc <- moloc.abf(listData) # uses default priors
-
+moloc = moloc.abf(listData) # uses default priors
 }
 \author{
-Claudia Giambartolomei
-
 Siwei Wu
 }
