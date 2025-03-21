@@ -7,7 +7,7 @@
 moloc.abf(
   listData,
   prior_var = c(0.01, 0.1, 0.5),
-  priors = "default",
+  priors = c("default", "default", "default"),
   save.SNP.info = FALSE
 )
 }

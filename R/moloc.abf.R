@@ -454,15 +454,15 @@ snp_ppa <- function(ABF, n_files, config_ppas, save.SNP.info){
 #' @author Siwei Wu
 #' @examples
 #' moloc = moloc.abf(listData) # uses default priors
-moloc.abf = function(listData, prior_var=c(0.01, 0.1, 0.5), priors="default", save.SNP.info = FALSE) {
+moloc.abf = function(listData, prior_var=c(0.01, 0.1, 0.5), priors=c("default", "default", "default"), save.SNP.info = FALSE) {
   
   # Set up prior probabilities
   n_files = length(listData)
-  if(priors == "default"){
-    priors = ifelse(n_files == 3, c(1e-04, 1e-06, 1e-07), 10^-(seq(from=4, to=4+n_files-1, by=1)))
+  if(length(priors)!=n_files) stop("Priors need to be the same length as the number of traits")
+  if(all(priors == "default")){
+    if(n_files == 3){priors = c(1e-04, 1e-06, 1e-07)}else{priors = 10^-(seq(from=4, to=4+n_files-1, by=1))}
     message("Use default priors: ", paste(priors, collapse=","))
   }else{
-    if(length(priors)!=n_files) stop("Priors need to be the same length as the number of traits")
     if(!all(is.numeric(priors))) stop("Priors need to be numeric values < 1")
   }
   
