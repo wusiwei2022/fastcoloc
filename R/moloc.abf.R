@@ -459,7 +459,7 @@ moloc.abf = function(listData, prior_var=c(0.01, 0.1, 0.5), priors="default", sa
   # Set up prior probabilities
   n_files = length(listData)
   if(priors == "default"){
-    priors == ifelse(n_files = 3, c(1e-04, 1e-06, 1e-07), 10^-(seq(from=4, to=4+n_files-1, by=1)))
+    priors = ifelse(n_files == 3, c(1e-04, 1e-06, 1e-07), 10^-(seq(from=4, to=4+n_files-1, by=1)))
     message("Use default priors: ", paste(priors, collapse=","))
   }else{
     if(length(priors)!=n_files) stop("Priors need to be the same length as the number of traits")
