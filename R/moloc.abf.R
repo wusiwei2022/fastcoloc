@@ -127,12 +127,12 @@ approx.bf.estimates <- function (z, V, type, suffix=NULL, sdY=1, prior_var) {
 ##' @param suffix "df1", "df2", "df3", ...
 ##' @return data.frame with log(abf) or log(bf)
 ##' @author Siwei Wu
-process.dataset <- function(d, suffix=NULL, type=NULL, prior_var) { # if have an idea of sdY provide it in the data
+process.dataset = function(d, suffix=NULL, type=NULL, prior_var) { # if have an idea of sdY provide it in the data
   # message('Processing dataset')
   nd = names(d)
   if (is.null(type)) stop('The variable type must be set, otherwise the Bayes factors cannot be computed')
-  if ("BETA" %in% nd && "varbeta" %in% nd && !("MAF" %in% nd & "N" %in% nd || "sdY" %in% nd)) stop('Must give either MAF and N, or sdY')
-  if ("BETA" %in% nd && "varbeta" %in% nd && ("MAF" %in% nd || "sdY" %in% nd)) {
+  # if (type == "quant" && "BETA" %in% nd && "varbeta" %in% nd && !("MAF" %in% nd & "N" %in% nd || "sdY" %in% nd)) stop('Must give either MAF and N, or sdY')
+  if ("BETA" %in% nd && "varbeta" %in% nd && ("MAF" %in% nd || "sdY" %in% nd || type == "cc")) {
     bf <- approx.bf.estimates(z=d$BETA/sqrt(d$varbeta), V=d$varbeta, type=type, suffix=NULL, sdY=d$sdY, prior_var)
     return(bf)
   }
