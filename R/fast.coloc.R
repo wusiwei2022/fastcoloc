@@ -30,7 +30,8 @@ fast.coloc = function(coloc.data, type.a = c("quant", "cc"), type.b = c("quant",
   
   # Format the data structure for the 2nd gwas
   if("beta.b" %in% names(coloc.data) & "se.b" %in% names(coloc.data)){
-    coloc.data.b = list(snp = coloc.data$rsid, beta = coloc.data$beta.b, varbeta = (coloc.data$se.b)^2, type = type.b)
+    if(type.b == "cc"){coloc.data.b = list(snp = coloc.data$rsid, beta = coloc.data$beta.b, varbeta = (coloc.data$se.b)^2, type = type.b)}
+    if(type.b == "quant"){coloc.data.b = list(snp = coloc.data$rsid, beta = coloc.data$beta.b, varbeta = (coloc.data$se.b)^2, type = type.b, sdY = ifelse(is.null(sdY.b), 1, sdY.b))}
   }else if(type.b == "quant" & "p.b" %in% names(coloc.data) & "maf.b" %in% names(coloc.data) & "n.b" %in% names(coloc.data)){
     coloc.data.b = list(snp = coloc.data$rsid, pvalues = coloc.data$p.b, MAF = coloc.data$maf.b, N = coloc.data$n.b, type = type.b)
   }else if(type.b == "cc" & "p.b" %in% names(coloc.data) & "maf.b" %in% names(coloc.data) & "n.b" %in% names(coloc.data) & "ncase.b" %in% names(coloc.data)){
