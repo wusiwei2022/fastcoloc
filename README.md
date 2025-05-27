@@ -13,6 +13,8 @@ devtools::install_github("wusiwei2022/fastcoloc")
 ```
 
 ## To do
-Function statement, example data, and example codes will be made available soon.
+Current fastcoloc::fast.coloc function was build on coloc::coloc_test function and therefore only accept beta and se or p, maf, and n as input to calculate Bayesian factor.
+In the future, fast.coloc will allow users to calculate Bayesian factor from Z statistics directly.
+Function statement, example data, and example codes will also be made available soon.<br>
 Regional genomic plots tailed for colocalization analysis will be available in the future updata.<br>
 
